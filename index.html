@@ -1,0 +1,749 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:linear-gradient(160deg,#0f172a 0%,#1a1f2e 40%,#1e2332 100%);color:#e8e6e3}
+.hidden{display:none !important}
+.classic-bg{position:fixed;inset:0;pointer-events:none;background:
+  radial-gradient(circle at top left,rgba(217,119,6,.10),transparent 38%),
+  radial-gradient(circle at 85% 15%,rgba(168,162,158,.08),transparent 30%),
+  radial-gradient(circle at 50% 100%,rgba(234,179,8,.06),transparent 35%)}
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:2rem;position:relative;z-index:1}
+.auth-card{width:min(960px,100%);display:grid;grid-template-columns:1.05fr .95fr;border:1px solid rgba(180,160,120,.20);border-radius:28px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);background:rgba(20,24,35,.94);backdrop-filter:blur(16px)}
+.auth-hero{padding:2.5rem;background:linear-gradient(155deg,#1a1d2e 0%,#1e2233 50%,#252a3d 100%);color:#f5f3f0;display:flex;flex-direction:column;justify-content:center;gap:1rem}
+.auth-kicker{font-size:11px;letter-spacing:.26em;text-transform:uppercase;opacity:.78}
+.auth-hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.3rem,5vw,4.5rem);line-height:.95;font-weight:700;max-width:10ch;color:#f5f3f0}
+.auth-hero p{display:none}
+.auth-badges{display:none}
+.auth-chip{display:none}
+.auth-panel{padding:2.5rem;background:#141824;color:#d4cfc7}
+.auth-panel h2,.home-title{font-family:Georgia,'Times New Roman',serif;color:#f5f3f0}
+.auth-panel h2{font-size:1.6rem;margin-bottom:.35rem}
+.auth-panel p{display:none}
+.auth-grid{display:grid;gap:1rem;margin-top:1.25rem}
+.auth-label{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#a89a82;margin-bottom:.35rem}
+.auth-help{display:none}
+.auth-note{display:none}
+.home-shell{position:relative;z-index:1;padding:1.25rem clamp(1rem,2vw,2rem) 2rem}
+.home-card{max-width:1180px;margin:0 auto 1rem;border:1px solid rgba(180,160,120,.16);border-radius:28px;background:rgba(22,26,38,.90);backdrop-filter:blur(14px);box-shadow:0 24px 70px rgba(0,0,0,.24);overflow:hidden}
+.home-top{padding:1.6rem 1.6rem 1.1rem;border-bottom:1px solid rgba(180,160,120,.12);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:.85rem}
+.brand-mark{width:46px;height:46px;border-radius:16px;background:linear-gradient(145deg,#b45309,#1e293b);display:grid;place-items:center;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.brand h1{font-family:Georgia,'Times New Roman',serif;font-size:1.2rem;color:#f8fafc}
+.brand span{display:block;font-size:12px;color:#7a7568;margin-top:2px}
+.home-actions{display:flex;gap:.7rem;flex-wrap:wrap}
+.home-hero{padding:1.6rem;display:grid;grid-template-columns:1.2fr .8fr;gap:1rem}
+.hero-copy{padding:1.2rem 0}
+.hero-copy h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(2rem,4vw,3.6rem);line-height:1.02;color:#f5f3f0;max-width:12ch}
+.hero-copy p{margin-top:.8rem;color:#9a9588;max-width:56ch;line-height:1.8;font-size:14px}
+.hero-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+.classic-metric{padding:1rem;border-radius:20px;border:1px solid rgba(180,160,120,.14);background:linear-gradient(180deg,#1a1d2e,#161a28)}
+.classic-metric .v{font-family:Georgia,'Times New Roman',serif;font-size:1.55rem;color:#e8dcc8}
+.classic-metric .l{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a7f6e;margin-top:.35rem}
+.classic-panel{padding:0 1.6rem 1.6rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+.classic-panel .card{padding:1rem 1.05rem;border-radius:20px;border:1px solid rgba(180,160,120,.14);background:#0f172a}
+.classic-panel h3{font-family:Georgia,'Times New Roman',serif;font-size:1rem;color:#e8dcc8;margin-bottom:.35rem}
+.classic-panel p{font-size:13px;color:#9a9588;line-height:1.65}
+.home-status{padding:0 1.6rem 1.6rem;display:flex;gap:.7rem;flex-wrap:wrap}
+.home-pill{padding:.55rem .85rem;border-radius:999px;border:1px solid rgba(180,160,120,.16);background:#1a1d2e;color:#c9c3b8;font-size:12px}
+.app-gate{display:none}
+.app-gate.on{display:block}
+@media (max-width: 900px){
+  .auth-card,.home-hero,.classic-panel{grid-template-columns:1fr}
+  .hero-metrics{grid-template-columns:1fr}
+}
+.w{padding:1rem 0;font-family:var(--font-sans)}
+.hdr{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.hdr h1{font-size:19px;font-weight:500;color:#e8dcc8}
+.badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+.badge-g{background:rgba(132,204,22,.15);color:#a3e635}
+.badge-r{background:rgba(239,68,68,.15);color:#fca5a5}
+.badge-y{background:rgba(234,179,8,.15);color:#fcd34d}
+.tabs{display:flex;gap:2px;margin-bottom:1.25rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tab{padding:7px 14px;font-size:13px;cursor:pointer;border:none;background:none;color:#7a7568;border-bottom:2px solid transparent;margin-bottom:-0.5px;font-family:var(--font-sans)}
+.tab.on{color:#d4a853;border-bottom-color:#d4a853;font-weight:500}
+.tab:hover:not(.on){color:#c9c3b8}
+.pnl{display:none}.pnl.on{display:block}
+.sec{background:rgba(22,26,38,.85);color:#d4cfc7;border:0.5px solid rgba(180,160,120,.12);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem;box-shadow:0 10px 30px rgba(0,0,0,.20)}
+.stitle{font-size:11px;font-weight:500;color:#a89a82;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+.api-setup{background:rgba(22,26,38,.85);color:#d4cfc7;border:0.5px solid rgba(180,160,120,.12);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem;box-shadow:0 10px 30px rgba(0,0,0,.20)}
+.api-setup p{font-size:13px;color:#9a9588;line-height:1.6}
+.api-setup strong{font-weight:500;color:#d4cfc7}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.75rem}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:.75rem}
+label{font-size:12px;color:#a89a82;display:block;margin-bottom:3px}
+select,input[type=text],input[type=number],input[type=password]{width:100%;padding:7px 10px;border:0.5px solid rgba(180,160,120,.18);border-radius:var(--border-radius-md);font-size:13px;background:#1a1d2e;color:#d4cfc7;font-family:var(--font-sans)}
+.btn{padding:8px 14px;border:0.5px solid rgba(180,160,120,.22);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:rgba(26,29,46,.88);color:#d4cfc7;font-family:var(--font-sans);display:inline-flex;align-items:center;gap:6px;transition:background .15s,border-color .15s,color .15s,box-shadow .15s}
+.btn:hover{background:rgba(180,160,120,.10);border-color:rgba(217,119,6,.35);color:#f5f3f0;box-shadow:0 0 0 1px rgba(217,119,6,.08) inset}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-p{background:#d4a853;color:#1a1d2e;border-color:#d4a853}
+.btn-p:hover{background:#c49a4a;color:#f5f3f0;border-color:#c49a4a}
+.upload-zone{border:1.5px dashed rgba(180,160,120,.22);border-radius:var(--border-radius-lg);padding:1.5rem;text-align:center;cursor:pointer;background:#1a1d2e}
+.upload-zone:hover{border-color:#d4a853}
+.upload-zone i{font-size:28px;color:#7a7568;display:block;margin-bottom:.4rem}
+.upload-zone p{font-size:13px;color:#c9c3b8}
+#fi{display:none}
+.prev-img{max-width:100%;border-radius:var(--border-radius-md);border:0.5px solid rgba(180,160,120,.15);margin-top:.6rem;max-height:300px;object-fit:contain}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px}
+.chip{padding:4px 10px;border:0.5px solid rgba(180,160,120,.16);border-radius:20px;font-size:12px;cursor:pointer;background:rgba(26,29,46,.72);color:#9a9588;transition:background .15s,border-color .15s,color .15s}
+.chip:hover{background:rgba(180,160,120,.10);border-color:rgba(217,119,6,.30);color:#e8dcc8}
+.chip.on{background:rgba(212,168,83,.18);color:#e8dcc8;border-color:rgba(212,168,83,.40)}
+.res-box{background:#161a28;border:0.5px solid rgba(180,160,120,.12);border-radius:var(--border-radius-lg);padding:1.25rem;margin-top:1rem;box-shadow:0 10px 30px rgba(0,0,0,.20)}
+.sig-big{font-size:36px;font-weight:500;text-align:center;letter-spacing:.02em}
+.buy{color:#a3e635}.sell{color:#fca5a5}.wait{color:#fcd34d}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dot-g{background:#a3e635}.dot-r{background:#fca5a5}.dot-y{background:#fcd34d}
+.metric-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:.75rem 0}
+.metric{background:#1a1d2e;border:0.5px solid rgba(180,160,120,.10);border-radius:var(--border-radius-md);padding:.6rem;text-align:center}
+.metric-v{font-size:16px;font-weight:500;color:#e8dcc8}
+.metric-l{font-size:11px;color:#7a7568;margin-top:2px}
+.reasoning{font-size:13px;line-height:1.75;color:#c9c3b8;white-space:pre-wrap;margin-top:.75rem}
+.ld{display:inline-flex;gap:3px}
+.ld span{width:5px;height:5px;border-radius:50%;background:#7a7568;animation:bl 1.4s infinite}
+.ld span:nth-child(2){animation-delay:.2s}
+.ld span:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.key-stat{display:flex;align-items:center;gap:8px;padding:.6rem .75rem;background:#1a1d2e;border-radius:var(--border-radius-md);margin-bottom:.5rem;font-size:13px;border:0.5px solid rgba(180,160,120,.10);color:#0f172a}
+.tog{position:relative;width:34px;height:18px;cursor:pointer;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.tog-sl{position:absolute;inset:0;border-radius:9px;background:#3a3530}
+.tog-sl:before{content:'';position:absolute;width:12px;height:12px;left:3px;top:3px;border-radius:50%;background:white;transition:.15s}
+input:checked+.tog-sl{background:#d4a853}
+input:checked+.tog-sl:before{transform:translateX(16px)}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0}
+.hint{font-size:11px;color:#6b6558;margin-top:3px}
+.news-item{padding:.6rem 0;border-bottom:0.5px solid rgba(180,160,120,.10);color:#c9c3b8}
+.news-item:last-child{border-bottom:none}
+.imp{font-size:10px;padding:1px 6px;border-radius:10px;margin-left:5px}
+.imp-h{background:rgba(239,68,68,.15);color:#fca5a5}
+.imp-m{background:rgba(234,179,8,.15);color:#fcd34d}
+.imp-l{background:rgba(132,204,22,.15);color:#a3e635}
+.err-box{background:rgba(239,68,68,.08);border:0.5px solid rgba(239,68,68,.25);border-radius:var(--border-radius-lg);padding:1rem;margin-top:.75rem}
+.err-box p{font-size:13px;color:#fca5a5;line-height:1.6}
+.suc-box{background:rgba(132,204,22,.08);border:0.5px solid rgba(132,204,22,.25);border-radius:var(--border-radius-lg);padding:1rem;margin-top:.75rem}
+.suc-box p{font-size:13px;color:#a3e635}
+.actions{display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap}
+</style>
+
+<div class="classic-bg" aria-hidden="true"></div>
+
+<div id="authScreen" class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-hero">
+      <div>
+        <h1>Classic Trading Desk</h1>
+      </div>
+    </div>
+    <div class="auth-panel">
+      <h2>Sign In</h2>
+      <div class="auth-grid">
+        <div>
+          <div class="auth-label">Username</div>
+          <input type="text" id="loginUser" placeholder="Enter any username">
+        </div>
+        <div>
+          <div class="auth-label">Password</div>
+          <input type="password" id="loginPass" placeholder="Enter any password">
+        </div>
+        <div>
+          <div class="auth-label">2FA Code</div>
+          <input type="text" id="login2fa" placeholder="000000" maxlength="7" inputmode="numeric">
+        </div>
+        <button class="btn btn-p" id="loginBtn" onclick="doLogin()">Enter Dashboard</button>
+      </div>
+      <div id="loginMsg" class="auth-note"></div>
+    </div>
+  </div>
+</div>
+
+<div id="appScreen" class="app-gate">
+  <div class="home-shell">
+    <div class="home-card">
+      <div class="home-top">
+        <div class="brand">
+          <div class="brand-mark"><i class="ti ti-chart-candle" aria-hidden="true"></i></div>
+          <div>
+            <h1>Classic Trading Home</h1>
+            <span>Timeless market workspace with a refined analyst layout</span>
+          </div>
+        </div>
+        <div class="home-actions">
+          <button class="btn" onclick="scrollToAnalyzer()"><i class="ti ti-scan" aria-hidden="true"></i> Open Analyzer</button>
+          <button class="btn" onclick="logoutUser()"><i class="ti ti-logout" aria-hidden="true"></i> Logout</button>
+        </div>
+      </div>
+      <div class="home-hero">
+        <div class="hero-copy">
+          <h2>Elegant, classic dashboard for daily trade decisions.</h2>
+          <p>Refined market workspace with a dark presentation and clear light typography.</p>
+        </div>
+        <div class="hero-metrics">
+          <div class="classic-metric"><div class="v">24/5</div><div class="l">Market Flow</div></div>
+          <div class="classic-metric"><div class="v">SMC</div><div class="l">Core Method</div></div>
+          <div class="classic-metric"><div class="v">BEST</div><div class="l">NOT LIKE US</div></div>
+        </div>
+      </div>
+      <div class="classic-panel">
+        <div class="card">
+          <h3>Private Access</h3>
+          <p>Simple and secure login.</p>
+        </div>
+        <div class="card">
+          <h3>Classic Layout</h3>
+          <p>Dark, restrained and premium visual language.</p>
+        </div>
+        <div class="card">
+          <h3>Execution Ready</h3>
+          <p>Analyzer flow stays available underneath.</p>
+        </div>
+      </div>
+      <div class="home-status">
+    </div>
+
+    <div id="mainApp">
+
+<div class="w">
+<div class="hdr">
+  <i class="ti ti-chart-candle" style="font-size:22px" aria-hidden="true"></i>
+  <h1>AI Trading Analyzer</h1>
+  <span class="badge badge-r" id="connBadge">Disconnected</span>
+</div>
+
+<div class="tabs">
+  <button class="tab on" onclick="sw('analyze')"><i class="ti ti-scan" aria-hidden="true"></i> Analyze</button>
+  <button class="tab" onclick="sw('setup')"><i class="ti ti-key" aria-hidden="true"></i> API Setup</button>
+  <button class="tab" onclick="sw('news')"><i class="ti ti-news" aria-hidden="true"></i> News</button>
+</div>
+
+<!-- ANALYZE TAB -->
+<div id="tab-analyze" class="pnl on">
+  <div id="noKeyWarn" class="api-setup">
+    <p><strong>⚠️ API Key Required</strong><br>
+    "API Setup" tab mein jaao aur apni <strong>Anthropic API key</strong> paste karo.<br>
+    Key milti hai: <strong>console.anthropic.com</strong> → API Keys<br>
+    <em style="font-size:12px">Third-party keys (pekpik.com) is sandbox mein CORS block ki wajah se kaam nahi karti.</em></p>
+  </div>
+
+  <div class="sec">
+    <div class="stitle">Chart Screenshot</div>
+    <div class="upload-zone" onclick="document.getElementById('fi').click()" id="uz">
+      <i class="ti ti-photo-up" aria-hidden="true"></i>
+      <p>Click to upload chart screenshot</p>
+      <span style="font-size:11px;color:var(--color-text-tertiary)">PNG, JPG, WEBP · Any timeframe</span>
+    </div>
+    <input type="file" id="fi" accept="image/*" onchange="handleFile(this)">
+    <div id="pw" style="display:none">
+      <img id="pi" class="prev-img" alt="Chart">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem">
+        <span id="fn" style="font-size:11px;color:var(--color-text-tertiary)"></span>
+        <button class="btn" onclick="clearImg()"><i class="ti ti-x" aria-hidden="true"></i> Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>Symbol / Pair</label>
+      <select id="sym">
+        <option value="XAUUSD">XAU/USD (Gold)</option>
+        <option value="EURUSD">EUR/USD</option>
+        <option value="GBPUSD">GBP/USD</option>
+        <option value="USDJPY">USD/JPY</option>
+        <option value="GBPJPY">GBP/JPY</option>
+        <option value="AUDUSD">AUD/USD</option>
+        <option value="USDCAD">USD/CAD</option>
+        <option value="EURJPY">EUR/JPY</option>
+        <option value="BTCUSD">BTC/USD</option>
+        <option value="ETHUSD">ETH/USD</option>
+        <option value="US30">US30 (Dow)</option>
+        <option value="NAS100">NAS100</option>
+        <option value="custom">Custom...</option>
+      </select>
+      <div id="csw" style="display:none;margin-top:5px">
+        <input type="text" id="cs" placeholder="e.g. USDMXN">
+      </div>
+    </div>
+    <div>
+      <label>Timeframe</label>
+      <select id="tf">
+        <option value="M1">M1 (Scalp)</option>
+        <option value="M5" selected>M5</option>
+        <option value="M15">M15</option>
+        <option value="M30">M30</option>
+        <option value="H1">H1</option>
+        <option value="H4">H4</option>
+        <option value="D1">D1</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>Account Balance ($)</label>
+      <input type="number" id="bal" value="1000" min="10">
+    </div>
+    <div>
+      <label>Risk Per Trade</label>
+      <select id="risk">
+        <option value="0.5">0.5% — Conservative</option>
+        <option value="1" selected>1% — Standard</option>
+        <option value="2">2% — Moderate</option>
+        <option value="3">3% — Aggressive</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-bottom:.75rem">
+    <div class="stitle">Analysis Concepts</div>
+    <div class="chip-row" id="chips">
+      <span class="chip on" onclick="tc(this)">SMC</span>
+      <span class="chip on" onclick="tc(this)">RSI</span>
+      <span class="chip on" onclick="tc(this)">Liquidity Sweep</span>
+      <span class="chip on" onclick="tc(this)">FVG</span>
+      <span class="chip on" onclick="tc(this)">Order Block</span>
+      <span class="chip on" onclick="tc(this)">Scalping Mode</span>
+      <span class="chip" onclick="tc(this)">VWAP</span>
+      <span class="chip" onclick="tc(this)">Wyckoff</span>
+      <span class="chip" onclick="tc(this)">Supply/Demand</span>
+      <span class="chip" onclick="tc(this)">Volume Profile</span>
+    </div>
+  </div>
+
+  <div class="tog-row">
+    <div>
+      <div style="font-size:13px;font-weight:500">Include News Impact</div>
+      <div class="hint">AI will factor in current economic events</div>
+    </div>
+    <label class="tog"><input type="checkbox" id="news" checked><span class="tog-sl"></span></label>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-p" onclick="analyze()" id="abtn"><i class="ti ti-brain" aria-hidden="true"></i> Analyze Chart</button>
+    <button class="btn" onclick="clearRes()"><i class="ti ti-refresh" aria-hidden="true"></i> Clear</button>
+  </div>
+
+  <div id="res"></div>
+</div>
+
+<!-- API SETUP TAB -->
+<div id="tab-setup" class="pnl">
+  <div class="sec">
+    <div class="stitle">Anthropic API Key (Recommended)</div>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:.75rem;line-height:1.6">
+      Claude.ai artifacts sirf <strong>api.anthropic.com</strong> ko allow karti hain. Apni key yahan paste karo:
+    </p>
+    <label>Anthropic API Key</label>
+    <div style="display:flex;gap:8px;margin-bottom:.5rem">
+      <input type="password" id="anthropicKey" placeholder="sk-ant-api03-...">
+      <button class="btn" onclick="testKey()" id="testBtn"><i class="ti ti-plug" aria-hidden="true"></i> Test</button>
+    </div>
+    <div id="testResult"></div>
+    <div style="margin-top:.75rem;display:flex;gap:8px">
+      <button class="btn btn-p" onclick="saveKey()"><i class="ti ti-check" aria-hidden="true"></i> Save & Use</button>
+      <button class="btn" onclick="clearKey()"><i class="ti ti-trash" aria-hidden="true"></i> Clear</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="stitle">Why Third-Party Keys Don't Work Here</div>
+    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">
+      <p style="margin-bottom:.5rem"><span class="dot dot-r"></span> <strong>aiapiv2.pekpik.com</strong> — CORS blocked by claude.ai sandbox</p>
+      <p style="margin-bottom:.5rem"><span class="dot dot-r"></span> <strong>openrouter.ai</strong> — Same CORS restriction</p>
+      <p style="margin-bottom:.5rem"><span class="dot dot-g"></span> <strong>api.anthropic.com</strong> — ✓ Allowed in claude.ai artifacts</p>
+      <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:.5rem">
+      </p>
+    </div>
+    <div class="actions">
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="stitle">Current Status</div>
+    <div id="keyStatus" class="key-stat">
+      <span class="dot dot-r"></span>
+      <span style="font-size:13px;color:var(--color-text-secondary)">No API key saved</span>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS TAB -->
+<div id="tab-news" class="pnl">
+  <div class="sec">
+    <div class="stitle">High Impact Economic Events</div>
+    <div class="news-item">
+      <span style="font-size:13px;font-weight:500">US Non-Farm Payrolls</span>
+      <span class="imp imp-h">HIGH</span>
+      <div style="font-size:11px;color:#6b6558;margin-top:2px">USD · Affects: XAU/USD, EUR/USD, GBP/USD</div>
+    </div>
+    <div class="news-item">
+      <span style="font-size:13px;font-weight:500">Fed Interest Rate Decision</span>
+      <span class="imp imp-h">HIGH</span>
+      <div style="font-size:11px;color:#6b6558;margin-top:2px">USD · All USD pairs volatile · Gold big move expected</div>
+    </div>
+    <div class="news-item">
+      <span style="font-size:13px;font-weight:500">ECB Press Conference</span>
+      <span class="imp imp-m">MEDIUM</span>
+      <div style="font-size:11px;color:#6b6558;margin-top:2px">EUR · Affects: EUR/USD, EUR/JPY, GBP/EUR</div>
+    </div>
+    <div class="news-item">
+      <span style="font-size:13px;font-weight:500">UK CPI Inflation Data</span>
+      <span class="imp imp-m">MEDIUM</span>
+      <div style="font-size:11px;color:#6b6558;margin-top:2px">GBP · GBP/USD, GBP/JPY volatility</div>
+    </div>
+    <div class="news-item">
+      <span style="font-size:13px;font-weight:500">BOJ Policy Meeting</span>
+      <span class="imp imp-h">HIGH</span>
+      <div style="font-size:11px;color:#6b6558;margin-top:2px">JPY · USD/JPY, GBP/JPY, EUR/JPY</div>
+    </div>
+    <div class="news-item">
+      <span style="font-size:13px;font-weight:500">US CPI Inflation</span>
+      <span class="imp imp-h">HIGH</span>
+      <div style="font-size:11px;color:#6b6558;margin-top:2px">USD · Expected 2.4% YoY · Gold, USD pairs</div>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-p" onclick="newsAnalysis()"><i class="ti ti-brain" aria-hidden="true"></i> Analyze News Impact</button>
+  </div>
+  <div id="newsRes"></div>
+</div>
+</div>
+
+<script>
+let imgB64=null,imgMime='image/jpeg',savedKey='',activeModel='claude-sonnet-4-6';
+const LOGIN_2FA='1225120';
+
+function initAuth(){
+  const saved=sessionStorage.getItem('classicTradingLoggedIn');
+  if(saved==='1') showApp();
+  else showLogin();
+}
+
+function showLogin(){
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('appScreen').classList.add('hidden');
+  document.getElementById('appScreen').classList.remove('on');
+}
+
+function showApp(){
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appScreen').classList.remove('hidden');
+  document.getElementById('appScreen').classList.add('on');
+}
+
+function doLogin(){
+  const user=document.getElementById('loginUser').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  const code=document.getElementById('login2fa').value.trim();
+  const msg=document.getElementById('loginMsg');
+  if(!user||!pass){
+    msg.textContent='Username aur password dono fill karo.';
+    return;
+  }
+  if(code!==LOGIN_2FA){
+    msg.textContent='Wrong Password ';
+    return;
+  }
+  sessionStorage.setItem('classicTradingLoggedIn','1');
+  msg.textContent='Login successful. Dashboard open ho raha hai.';
+  showApp();
+  sw('analyze');
+}
+
+function logoutUser(){
+  sessionStorage.removeItem('classicTradingLoggedIn');
+  document.getElementById('loginPass').value='';
+  document.getElementById('login2fa').value='';
+  document.getElementById('loginMsg').textContent='Welcome screen ready. Login karne ke baad classic homepage open hogi.';
+  showLogin();
+}
+
+function scrollToAnalyzer(){
+  document.getElementById('mainApp').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+initAuth();
+
+document.getElementById('sym').addEventListener('change',function(){
+  document.getElementById('csw').style.display=this.value==='custom'?'block':'none';
+});
+
+function sw(t){
+  ['analyze','setup','news'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('on',x===t);
+  });
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    el.classList.toggle('on',['analyze','setup','news'][i]===t);
+  });
+  if(t==='setup') updateKeyStatus();
+}
+
+function tc(el){el.classList.toggle('on')}
+
+function handleFile(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    imgB64=e.target.result.split(',')[1];
+    imgMime=file.type||'image/jpeg';
+    document.getElementById('pi').src=e.target.result;
+    document.getElementById('fn').textContent=file.name+' ('+Math.round(file.size/1024)+' KB)';
+    document.getElementById('pw').style.display='block';
+    document.getElementById('uz').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImg(){
+  imgB64=null;
+  document.getElementById('fi').value='';
+  document.getElementById('pw').style.display='none';
+  document.getElementById('uz').style.display='block';
+}
+
+function clearRes(){document.getElementById('res').innerHTML=''}
+
+function getChips(){
+  return Array.from(document.querySelectorAll('#chips .chip.on')).map(c=>c.textContent);
+}
+
+function getSym(){
+  const v=document.getElementById('sym').value;
+  return v==='custom'?(document.getElementById('cs').value||'CUSTOM'):v;
+}
+
+function buildPrompt(){
+  const sym=getSym(),tf=document.getElementById('tf').value;
+  const bal=document.getElementById('bal').value;
+  const risk=document.getElementById('risk').value;
+  const riskAmt=(parseFloat(bal)*parseFloat(risk)/100).toFixed(2);
+  const modes=getChips();
+  const scalp=modes.includes('Scalping Mode');
+  const news=document.getElementById('news').checked;
+
+  return `You are an expert forex/crypto trading analyst specializing in Smart Money Concepts (SMC) and technical analysis.
+
+TRADE PARAMETERS:
+- Symbol: ${sym} | Timeframe: ${tf}
+- Balance: $${bal} | Risk: ${risk}% = $${riskAmt} max loss
+- Analysis: ${modes.join(', ')}
+- Mode: ${scalp?'SCALPING — short trades, quick in/out, tight SL':'SWING/POSITION'}
+
+Analyze this chart image and respond in this EXACT format:
+
+SIGNAL: [BUY / SELL / WAIT]
+CONFIDENCE: [0-100]%
+
+MARKET STRUCTURE:
+[Describe trend: bullish/bearish/sideways, key HH/HL/LH/LL]
+
+KEY LEVELS:
+- Support: [price]
+- Resistance: [price]
+- Order Block: [if visible]
+- FVG: [if visible]
+
+ENTRY ZONE: [price range]
+STOP LOSS: [price] — [reason]
+TAKE PROFIT:
+- TP1: [price]
+- TP2: [price]
+- TP3: [price]
+
+RISK:REWARD: [ratio]
+
+LOT SIZE RECOMMENDATION:
+For $${bal} account with ${risk}% risk ($${riskAmt}):
+[Calculate exact lot size based on entry and SL distance]
+
+RSI READING: [estimate from chart + interpretation]
+${scalp?'SCALPING SETUP: [Is this good for scalping? Expected duration? Best entry timing?]':''}
+${news?'NEWS IMPACT: [How current USD/relevant currency news affects this trade]':''}
+
+SUMMARY: [2-3 sentence overall conclusion and recommendation]`;
+}
+
+async function analyze(){
+  if(!savedKey){
+    document.getElementById('res').innerHTML=`<div class="err-box"><p><strong>API Key nahi hai!</strong><br>"API Setup" tab mein jaao aur Anthropic API key add karo. console.anthropic.com se free key mil sakti hai.</p></div>`;
+    return;
+  }
+  if(!imgB64){
+    document.getElementById('res').innerHTML=`<div class="err-box"><p>Pehle chart screenshot upload karo.</p></div>`;
+    return;
+  }
+
+  const btn=document.getElementById('abtn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="ld"><span></span><span></span><span></span></span> Analyzing...';
+
+  document.getElementById('res').innerHTML=`<div class="res-box" style="text-align:center;padding:1.5rem">
+    <span class="ld" style="justify-content:center;display:flex;margin-bottom:.75rem"><span></span><span></span><span></span></span>
+    <p style="font-size:13px;color:var(--color-text-secondary)">AI chart analysis chal raha hai...<br><span style="font-size:11px">${getSym()} · ${document.getElementById('tf').value}</span></p>
+  </div>`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':savedKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-opus-4-6',
+        max_tokens:1500,
+        messages:[{
+          role:'user',
+          content:[
+            {type:'image',source:{type:'base64',media_type:imgMime,data:imgB64}},
+            {type:'text',text:buildPrompt()}
+          ]
+        }]
+      })
+    });
+
+    if(!resp.ok){
+      const e=await resp.json().catch(()=>({}));
+      throw new Error(e.error?.message||'API Error '+resp.status);
+    }
+
+    const data=await resp.json();
+    const text=data.content?.[0]?.text||'No response';
+    renderResult(text);
+  }catch(e){
+    document.getElementById('res').innerHTML=`<div class="err-box"><p><strong>Error:</strong> ${e.message}<br><span style="font-size:12px">API key check karo ya dobara try karo.</span></p></div>`;
+  }
+
+  btn.disabled=false;
+  btn.innerHTML='<i class="ti ti-brain" aria-hidden="true"></i> Analyze Chart';
+}
+
+function renderResult(text){
+  const sigM=text.match(/SIGNAL:\s*(BUY|SELL|WAIT|LONG|SHORT)/i);
+  const sig=sigM?sigM[1].toUpperCase():'WAIT';
+  const confM=text.match(/CONFIDENCE:\s*(\d+)/i);
+  const conf=confM?confM[1]:'?';
+  const rrM=text.match(/RISK:REWARD:\s*([\d.:]+)/i);
+  const rr=rrM?rrM[1]:'N/A';
+
+  const sigC=sig==='BUY'||sig==='LONG'?'buy':sig==='SELL'||sig==='SHORT'?'sell':'wait';
+  const sigIcon=sig==='BUY'||sig==='LONG'?'ti-trending-up':sig==='SELL'||sig==='SHORT'?'ti-trending-down':'ti-minus';
+
+  const fmt=text
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^(SIGNAL|CONFIDENCE|MARKET STRUCTURE|KEY LEVELS|ENTRY ZONE|STOP LOSS|TAKE PROFIT|RISK:REWARD|LOT SIZE|RSI|SCALPING|NEWS IMPACT|SUMMARY):/gm,
+      '<span style="font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.05em">$1:</span>');
+
+  document.getElementById('res').innerHTML=`
+  <div class="res-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <span style="font-size:12px;color:var(--color-text-tertiary)">${getSym()} · ${document.getElementById('tf').value} · ${new Date().toLocaleTimeString()}</span>
+    </div>
+    <div style="text-align:center;padding:.75rem 0;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:.75rem">
+      <i class="ti ${sigIcon} ${sigC}" style="font-size:36px;display:block;margin-bottom:.2rem" aria-hidden="true"></i>
+      <div class="sig-big ${sigC}">${sig}</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:.25rem">Confidence: <strong>${conf}%</strong> &nbsp;·&nbsp; R:R <strong>${rr}</strong></div>
+    </div>
+    <div class="reasoning">${fmt}</div>
+    <div class="actions">
+      <button class="btn" onclick="copyText()"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+      <button class="btn btn-p" onclick="analyze()"><i class="ti ti-refresh" aria-hidden="true"></i> Re-analyze</button>
+    </div>
+  </div>`;
+}
+
+function copyText(){
+  const el=document.querySelector('.reasoning');
+  if(el) navigator.clipboard.writeText(el.innerText).then(()=>{
+    const b=event.target.closest('button');
+    b.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Copied!';
+    setTimeout(()=>{b.innerHTML='<i class="ti ti-copy" aria-hidden="true"></i> Copy'},2000);
+  });
+}
+
+async function testKey(){
+  const key=document.getElementById('anthropicKey').value.trim();
+  if(!key){alert('Key paste karo pehle');return;}
+  const btn=document.getElementById('testBtn');
+  btn.disabled=true;btn.innerHTML='<span class="ld"><span></span><span></span><span></span></span>';
+  document.getElementById('testResult').innerHTML='';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:10,messages:[{role:'user',content:'Say OK'}]})
+    });
+    if(r.ok){
+      document.getElementById('testResult').innerHTML='<div class="suc-box"><p>✓ Key working! Ab "Save & Use" press karo.</p></div>';
+    } else {
+      const e=await r.json().catch(()=>({}));
+      document.getElementById('testResult').innerHTML=`<div class="err-box"><p>Error: ${e.error?.message||r.status}</p></div>`;
+    }
+  }catch(e){
+    document.getElementById('testResult').innerHTML=`<div class="err-box"><p>Connection failed: ${e.message}</p></div>`;
+  }
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-plug" aria-hidden="true"></i> Test';
+}
+
+function saveKey(){
+  const key=document.getElementById('anthropicKey').value.trim();
+  if(!key){alert('Key paste karo');return;}
+  savedKey=key;
+  updateKeyStatus();
+  document.getElementById('noKeyWarn').style.display='none';
+  document.getElementById('connBadge').textContent='Connected ✓';
+  document.getElementById('connBadge').className='badge badge-g';
+  sw('analyze');
+}
+
+function clearKey(){
+  savedKey='';
+  document.getElementById('anthropicKey').value='';
+  updateKeyStatus();
+  document.getElementById('noKeyWarn').style.display='block';
+  document.getElementById('connBadge').textContent='Disconnected';
+  document.getElementById('connBadge').className='badge badge-r';
+}
+
+function updateKeyStatus(){
+  const el=document.getElementById('keyStatus');
+  if(savedKey){
+    el.innerHTML=`<span class="dot dot-g"></span><span>Key active: ${savedKey.substring(0,15)}...</span><span class="badge badge-g" style="margin-left:auto">Connected</span>`;
+  } else {
+    el.innerHTML=`<span class="dot dot-r"></span><span style="color:var(--color-text-secondary)">No API key saved</span>`;
+  }
+}
+
+async function newsAnalysis(){
+  if(!savedKey){
+    document.getElementById('newsRes').innerHTML='<div class="err-box"><p>Pehle API Setup tab mein key add karo.</p></div>';
+    return;
+  }
+  const sym=getSym();
+  document.getElementById('newsRes').innerHTML=`<div class="res-box" style="text-align:center;padding:1rem"><span class="ld" style="display:flex;justify-content:center"><span></span><span></span><span></span></span><p style="font-size:12px;color:var(--color-text-secondary);margin-top:.5rem">Analyzing news for ${sym}...</p></div>`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':savedKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-haiku-4-5',max_tokens:600,
+        messages:[{role:'user',content:`As forex analyst, briefly analyze news impact on ${sym}. Consider: Fed rates, NFP, ECB, BOJ, CPI. Give: 1) Bias (BULLISH/BEARISH/NEUTRAL) 2) Key events affecting this pair 3) Trade recommendation. Be concise.`}]
+      })
+    });
+    if(!r.ok) throw new Error('API Error '+r.status);
+    const d=await r.json();
+    const t=d.content?.[0]?.text||'';
+    document.getElementById('newsRes').innerHTML=`<div class="res-box"><div style="font-size:11px;color:var(--color-text-tertiary);margin-bottom:.5rem">NEWS IMPACT — ${sym}</div><div class="reasoning">${t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div></div>`;
+  }catch(e){
+    document.getElementById('newsRes').innerHTML=`<div class="err-box"><p>${e.message}</p></div>`;
+  }
+}
+
+function downloadApp(){
+  const html=document.documentElement.outerHTML;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='trading-analyzer.html';
+  a.click();
+}
+</script>
